@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}register · chess-bot{% endblock %}
+{% block body %}
+<section class="card">
+  <h1>Create account</h1>
+  <p class="sub">An invite code is required to keep this from leaking to the whole class.</p>
+  {% if error %}<div class="err">{{ error }}</div>{% endif %}
+  <form method="post" action="/register" class="stack">
+    <label>
+      <span>Username</span>
+      <input name="username" autocomplete="username" required minlength="3">
+    </label>
+    <label>
+      <span>Password</span>
+      <input name="password" type="password" autocomplete="new-password" required minlength="6">
+    </label>
+    <label>
+      <span>Invite code</span>
+      <input name="invite" required>
+    </label>
+    <button type="submit" class="primary">Create account</button>
+  </form>
+  <p class="sub">Already registered? <a href="/login">Log in</a>.</p>
+</section>
+{% endblock %}

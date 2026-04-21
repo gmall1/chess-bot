@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}log in · chess-bot{% endblock %}
+{% block body %}
+<section class="card">
+  <h1>Log in</h1>
+  <p class="sub">Gate for the chess.com overlay. No account → <a href="/register">register</a>.</p>
+  {% if error %}<div class="err">{{ error }}</div>{% endif %}
+  <form method="post" action="/login" class="stack">
+    <label>
+      <span>Username</span>
+      <input name="username" autocomplete="username" required minlength="3">
+    </label>
+    <label>
+      <span>Password</span>
+      <input name="password" type="password" autocomplete="current-password" required minlength="6">
+    </label>
+    <button type="submit" class="primary">Log in</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}chess-bot{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="topnav">
+    <a href="/" class="brand">
+      <span class="brand-mark">♞</span>
+      <span class="brand-name">chess-bot</span>
+    </a>
+    <div class="spacer"></div>
+    {% if user %}
+      <span class="who">{{ user['username'] }}</span>
+      <form method="post" action="/logout" class="inline">
+        <button type="submit" class="linkbtn">log out</button>
+      </form>
+    {% else %}
+      <a href="/login" class="navlink">login</a>
+      <a href="/register" class="navlink">register</a>
+    {% endif %}
+  </nav>
+  <main>{% block body %}{% endblock %}</main>
+</body>
+</html>
