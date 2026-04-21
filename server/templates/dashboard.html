@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}dashboard · chess-bot{% endblock %}
+{% block body %}
+<section class="card wide">
+  <h1>Deploy the bot</h1>
+  <p class="sub">Open a chess.com game in another tab. Press <kbd>F12</kbd> → <b>Console</b>. Paste the line below and press Enter. The reasoning panel and arrows appear on the board.</p>
+
+  <div class="row">
+    <label class="elo-lbl">
+      <span>Target ELO</span>
+      <input id="elo" type="range" min="400" max="2400" step="100" value="600">
+      <output id="eloVal">600</output>
+    </label>
+  </div>
+
+  <div class="snippet">
+    <pre id="snip">loading…</pre>
+    <button id="copy" class="primary">Copy</button>
+  </div>
+
+  <h2>How it works</h2>
+  <ul>
+    <li><b>Guided</b> mode: the bot draws arrows and writes reasoning; you move.</li>
+    <li><b>Autonomous</b> mode: the bot clicks for you.</li>
+    <li>ELO 400–2400 adjusts search depth and move-selection noise. Default is low.</li>
+    <li>Toggle modes in the floating panel. Close with the × button.</li>
+  </ul>
+
+  <h2>Alternative: one-line fetch</h2>
+  <p class="sub">If pasting a long line is awkward, use this shorter loader — it fetches your authenticated script from this site.</p>
+  <div class="snippet">
+    <pre id="snipShort">loading…</pre>
+    <button id="copyShort" class="primary">Copy</button>
+  </div>
+</section>
+
+<script>
+const eloEl = document.getElementById('elo');
+const eloOut = document.getElementById('eloVal');
+const snip = document.getElementById('snip');
+const snipShort = document.getElementById('snipShort');
+const origin = window.location.origin;
+
+async function refresh() {
+  const elo = eloEl.value;
+  eloOut.value = elo;
+  // Short loader that fetches the real script. Works only when the user's
+  // browser has the session cookie from this site (i.e. they're logged in).
+  snipShort.textContent =
+    `fetch("${origin}/api/script.js?elo=${elo}",{credentials:"include"}).then(r=>r.text()).then(t=>(0,eval)(t));`;
+  // Inline payload for offline use (full script baked in).
+  try {
+    const r = await fetch(`/api/script.js?elo=${elo}`, { credentials: 'include' });
+    const txt = await r.text();
+    snip.textContent = txt;
+  } catch (e) {
+    snip.textContent = '/* error loading script: ' + e + ' */';
+  }
+}
+
+eloEl.addEventListener('input', refresh);
+
+document.getElementById('copy').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(snip.textContent);
+  document.getElementById('copy').textContent = 'Copied!';
+  setTimeout(() => document.getElementById('copy').textContent = 'Copy', 1200);
+});
+document.getElementById('copyShort').addEventListener('click', async () => {
+  await navigator.clipboard.writeText(snipShort.textContent);
+  document.getElementById('copyShort').textContent = 'Copied!';
+  setTimeout(() => document.getElementById('copyShort').textContent = 'Copy', 1200);
+});
+
+refresh();
+</script>
+{% endblock %}
